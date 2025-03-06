@@ -1,6 +1,5 @@
 #include <MSP.h>
 #include "MSP_OSD.h"
-#include "flt_modes.h"
 #include "OSD_positions_config.h"
 
 #define mspSerial Serial4
@@ -135,11 +134,4 @@ void send_osd_config()
     msp_osd_config.osd_rc_channels_pos = osd_rc_channels_pos;
 
     msp.send(MSP_OSD_CONFIG, &msp_osd_config, sizeof(msp_osd_config));
-}
-
-void invert_pos(uint16_t *pos1, uint16_t *pos2)
-{
-    uint16_t tmp_pos = *pos1;
-    *pos1 = *pos2;
-    *pos2 = tmp_pos;
 }
