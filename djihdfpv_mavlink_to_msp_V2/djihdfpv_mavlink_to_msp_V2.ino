@@ -20,10 +20,15 @@ uint8_t batteryState = 0;       // voltage color 0==white, 1==red
 uint16_t batteryVoltage = 8.4;
 uint32_t general_counter = 0;
 
+msp_attitude_t attitude = { 0 };
+msp_altitude_t altitude = { 0 };
+
 void setup()
 {
     mspSerial.begin(115200);
     msp.begin(mspSerial);
+    delay(1000);
+    send_osd_config();
 }
 
 void loop()
@@ -32,6 +37,7 @@ void loop()
     if ((uint32_t)(currentMillis_MSP - previousMillis_MSP) >= next_interval_MSP) {
         previousMillis_MSP = currentMillis_MSP;
         send_msp_to_airunit();
+        send_gyro_to_airunit();
         general_counter += next_interval_MSP;
     }
 }    
@@ -58,8 +64,12 @@ void send_msp_to_airunit()
 
     battery_state.mAhDrawn = 999;
     msp.send(MSP_BATTERY_STATE, &battery_state, sizeof(battery_state));
+}
 
-    send_osd_config();
+void send_gyro_to_airunit(){
+    attitude.pitch = 19.2 * 10;
+    attitude.roll = 10.7 * 10;
+    msp.send(MSP_ATTITUDE, &attitude, sizeof(attitude));
 }
 
 msp_osd_config_t msp_osd_config = {0};
